@@ -6,7 +6,7 @@ import os
 import argparse
 import numpy as np
 from pathlib import Path
-
+import latex
 def main(args):
     print(args)
     make_cards(args.file, args.rows, args.cols)
@@ -23,6 +23,8 @@ def make_cards(file, rows, cols):
     imagedir = os.path.join(os.path.dirname(file), "Images")
     Path(imagedir).mkdir(parents=True, exist_ok=True)
 
+    tex = latex.latex()
+
     for i in range(num_pages):
         start = i * num
         end = start + num
@@ -31,9 +33,11 @@ def make_cards(file, rows, cols):
         print(f"Links {links}")
         print(f"Texts {texts}")
 
-        destpath = download(links, imagedir)
+        images = download(links, imagedir)
         t = np.arange(0, num).reshape(rows, cols)
         t_flip = np.flip(t, 1)
+        tex.make_imageframe(images, rows, cols)
+
 
 def download(links, folder):
     destpath = []
@@ -42,7 +46,7 @@ def download(links, folder):
         if len(parts) == 2:
             ext = parts[1]
             filename = os.path.join(folder, parts[0] + "." + ext)
-
+            filename = filename.replace("%","")
             if not os.path.exists(filename):
                 try:
                     urllib.request.urlretrieve(l, filename)
