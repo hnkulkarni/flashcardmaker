@@ -40,6 +40,7 @@ def make_cards(file, rows, cols):
 
         if len(texts) < num:
             for r in range(num - len(texts)):
+                images.append("")
                 texts.append("")
 
         texts_flip = [texts[i] for i in t_flip_l]

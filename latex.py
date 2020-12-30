@@ -26,8 +26,12 @@ class latex:
         body = ""
         base = self.read_imageframe_base()
         for i in images:
-            inc_gfx = "\includegraphics[width=\\textwidth, height=0.95\\textheight]{" + f"{i}" + "}"
-            body += base.replace("INCLUDE-GRAPHICS", inc_gfx)
+            if i != "":
+                inc_gfx = "\includegraphics[width=\\textwidth, height=0.95\\textheight]{" + f"{i}" + "}"
+                body += base.replace("INCLUDE-GRAPHICS", inc_gfx)
+            else:
+                inc_gfx = ""
+                body += base.replace("INCLUDE-GRAPHICS", inc_gfx)
 
         self.filetext += body
         return body
