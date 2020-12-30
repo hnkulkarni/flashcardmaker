@@ -1,0 +1,5 @@
+\begin{frame}
+\begin{center}
+\Huge{\textbf{TEXT_HERE}}
+\end{center}
+\end{frame}

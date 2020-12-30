@@ -1,0 +1,5 @@
+\documentclass{beamer}
+\usepackage{inputenc}
+\setbeamertemplate{navigation symbols}{}
+\begin{document}
+
