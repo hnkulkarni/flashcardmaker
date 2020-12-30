@@ -79,8 +79,8 @@ def download(links, folder):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="File path of input csv")
-    parser.add_argument("-r", "--rows", metavar='N', type=int, nargs='+', default=2, help="Number of rows")
-    parser.add_argument("-c", "--cols", metavar='N', type=int, nargs='+', default=2, help="Number of columns")
+    parser.add_argument("-r", "--rows", metavar='N', type=int,  default=2, help="Number of rows")
+    parser.add_argument("-c", "--cols", metavar='N', type=int,  default=2, help="Number of columns")
 
     # Specify output of "--version"
     parser.add_argument(
