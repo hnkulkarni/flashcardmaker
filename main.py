@@ -5,20 +5,24 @@ import pandas as pd
 import os
 import argparse
 import numpy as np
+from pathlib import Path
 
 def main(args):
     print(args)
-    make_cards(args.file, args.num)
+    make_cards(args.file, args.rows, args.cols)
 
 
 
-def make_cards(file, num):
-    df = pd.read_csv(args.file)
-    print(df)
-
-    num_rows = len(df.index)
-    num_pages = float(num_rows)/num
+def make_cards(file, rows, cols):
+    df = pd.read_csv(file)
+    num = rows * cols
+    num_items = len(df.index)
+    num_pages = float(num_items)/num
     num_pages = int(np.ceil(num_pages))
+
+    imagedir = os.path.join(os.path.dirname(file), "Images")
+    Path(imagedir).mkdir(parents=True, exist_ok=True)
+
     for i in range(num_pages):
         start = i * num
         end = start + num
@@ -27,12 +31,34 @@ def make_cards(file, num):
         print(f"Links {links}")
         print(f"Texts {texts}")
 
+        destpath = download(links, imagedir)
+        t = np.arange(0, num).reshape(rows, cols)
+        t_flip = np.flip(t, 1)
 
+def download(links, folder):
+    destpath = []
+    for l in links:
+        parts = os.path.basename(l).split(sep=".")
+        if len(parts) == 2:
+            ext = parts[1]
+            filename = os.path.join(folder, parts[0] + "." + ext)
+
+            if not os.path.exists(filename):
+                try:
+                    urllib.request.urlretrieve(l, filename)
+                    destpath.append(filename)
+                except:
+                    print(f"Cannot get image for {l}")
+            else:
+                destpath.append(filename)
+
+    return destpath
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="File path of input csv")
-    parser.add_argument("-n", "--num", metavar='N', type=int, nargs='+', default=4, help="Frames per sheet")
+    parser.add_argument("-r", "--rows", metavar='N', type=int, nargs='+', default=2, help="Number of rows")
+    parser.add_argument("-c", "--cols", metavar='N', type=int, nargs='+', default=2, help="Number of columns")
 
     # Specify output of "--version"
     parser.add_argument(
