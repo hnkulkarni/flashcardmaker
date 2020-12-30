@@ -6,30 +6,49 @@ class latex:
         self.base_folder = "./base/"
         self.header = self.read_header()
 
+        self.filetext = ""
+        self.filetext += self.header
+
     def read_header(self):
         headerfile = os.path.join(self.base_folder, "header.txt")
         with open(headerfile, 'r') as hd:
             data_header = hd.read()
             return data_header
 
-    def make_imageframe(self, images, rows, cols):
-        frame_body = "\\begin{frame}\n"
-        frame_body = frame_body + "\\begin{columns}[t]\n"
-        cnt = 0
-        for c in range(cols):
-            col_space = 1.0/cols
-            frame_body = frame_body + "\\column{" + str(col_space) + "\\textwidth} \n \centering"
+    def read_imageframe_base(self):
+        filename = os.path.join(self.base_folder, "body_image.txt")
+        with open(filename, 'r') as skt:
+            body = skt.read()
+            return body
 
-            for r in range(rows):
-                inc_gfx = "\\fbox{\includegraphics[width=\\textwidth]{" + f"{images[cnt]}" + "}}"
-                frame_body = frame_body + inc_gfx + "\n"
 
-                cnt += 1
+    def make_imageframe(self, images):
+        body = ""
+        base = self.read_imageframe_base()
+        for i in images:
+            inc_gfx = "\includegraphics[width=\\textwidth, height=0.95\\textheight]{" + f"{i}" + "}"
+            body += base.replace("INCLUDE-GRAPHICS", inc_gfx)
 
-        frame_body = frame_body + "\\end{columns}\n"
-        frame_body = frame_body + "\\end{frame}\n"
+        self.filetext += body
+        return body
 
-        with open("frame.tex", 'w') as vb:
-            vb.write(frame_body)
+    def read_textframe_base(self):
+        filename = os.path.join(self.base_folder, "body_text.txt")
+        with open(filename, 'r') as skt:
+            body = skt.read()
+            return body
 
-        return frame_body
+    def make_textframe(self, texts):
+        base = self.read_textframe_base()
+        body = ""
+        for t in texts:
+            body += base.replace("TEXT_HERE", t)
+
+        self.filetext += body
+        return body
+
+    def close(self, file):
+        self.filetext += "\end{document}"
+
+        with open(file, 'w') as vb:
+            vb.write(self.filetext)

@@ -7,11 +7,11 @@ import argparse
 import numpy as np
 from pathlib import Path
 import latex
+import pathlib
+
 def main(args):
     print(args)
     make_cards(args.file, args.rows, args.cols)
-
-
 
 def make_cards(file, rows, cols):
     df = pd.read_csv(file)
@@ -36,7 +36,20 @@ def make_cards(file, rows, cols):
         images = download(links, imagedir)
         t = np.arange(0, num).reshape(rows, cols)
         t_flip = np.flip(t, 1)
-        tex.make_imageframe(images, rows, cols)
+        t_flip_l = t_flip.flatten().tolist()
+
+        if len(texts) < num:
+            for r in range(num - len(texts)):
+                texts.append("")
+
+        texts_flip = [texts[i] for i in t_flip_l]
+
+        tex.make_imageframe(images)
+        tex.make_textframe(texts_flip)
+
+    filestem = os.path.splitext(os.path.basename(file))[0]
+    output = os.path.join(os.path.dirname(file), filestem + "-output.tex")
+    tex.close(output)
 
 
 def download(links, folder):
@@ -47,14 +60,18 @@ def download(links, folder):
             ext = parts[1]
             filename = os.path.join(folder, parts[0] + "." + ext)
             filename = filename.replace("%","")
+
+            stempath = os.path.dirname(folder)
+            dpath = os.path.join("./", os.path.relpath(filename, stempath))
+
             if not os.path.exists(filename):
                 try:
                     urllib.request.urlretrieve(l, filename)
-                    destpath.append(filename)
+                    destpath.append(dpath)
                 except:
                     print(f"Cannot get image for {l}")
             else:
-                destpath.append(filename)
+                destpath.append(dpath)
 
     return destpath
 
