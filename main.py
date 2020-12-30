@@ -9,14 +9,17 @@ def main(args):
     print(args)
     print("Hello World")
 
-def is_valid_file(parser, arg):
-    if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
+    df = pd.read_csv(args.file)
+    print(df)
+
+
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", help="File path of input csv", required=True, metavar="FILE",
-                    type=lambda x: is_valid_file(parser, x))
+    parser.add_argument("-f", "--file", help="File path of input csv")
+
     # Specify output of "--version"
     parser.add_argument(
         "--version",

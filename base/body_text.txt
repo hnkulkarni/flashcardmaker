@@ -1,0 +1,5 @@
+\begin{frame}
+\begin{center}
+\Huge{\textbf{COUNTRY_NAME}}
+\end{center}
+\end{frame}
